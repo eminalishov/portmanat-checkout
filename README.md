@@ -71,9 +71,11 @@ $secret_key = '123456';
 $payment_type = 0;
 $token = md5($service_id . $order_id . $amount . $secret_key);
 
+$url = 'http://127.0.0.1:8000/en/checkout/create/';
+
 $curl = curl_init();
 curl_setopt_array($curl, array(
-    CURLOPT_URL => 'http://127.0.0.1:8000/en/checkout/create/',
+    CURLOPT_URL => $url,
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,
@@ -106,9 +108,11 @@ $amount = 1000;
 $secret_key = '123456';
 $token = md5($service_id . $order_id . $amount . $secret_key);
 
+$url = 'http://127.0.0.1:8000/en/checkout/status/e6554945-8caf-472c-9f6c-2640f33efb1d?token=4bfb74cf2d435ebf4109acbbed8ff52c';
+
 $curl = curl_init();
 curl_setopt_array($curl, array(
-    CURLOPT_URL => 'http://127.0.0.1:8000/en/checkout/status/e6554945-8caf-472c-9f6c-2640f33efb1d?token=4bfb74cf2d435ebf4109acbbed8ff52c',
+    CURLOPT_URL => $url,
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,
