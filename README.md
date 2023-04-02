@@ -8,6 +8,7 @@
 * [Ümumi məlumat](#about)
 * [Endpointlər](#endpoints)
 * [PHP kod](#phpcode)
+* [Java kod](#javacode)
 * [Python kod](#pythoncode)
 
 <a name="about"/>
@@ -121,6 +122,72 @@ curl_setopt_array($curl, array(
 ));
 $response = curl_exec($curl);
 curl_close($curl);
+```
+
+
+<a name="javacode"/>
+
+## Java kod
+
+Tranzaksiya yaradılması
+
+```
+int service_id = 4;
+int order_id = 1;
+float amount = 1000;
+String secret_key = "123456";
+int payment_type = 0;
+String plain_text = String.format("%d%d%f%s", service_id, order_id, amount, secret_key);
+MessageDigest md5 = MessageDigest.getInstance("MD5");
+md5.update(StandardCharsets.UTF_8.encode(plain_text));
+String token = String.format("%032x", new BigInteger(1, md5.digest()));
+
+String url = "http://127.0.0.1:8000/en/checkout/create/";
+
+OkHttpClient client = new OkHttpClient().newBuilder().build();
+MediaType mediaType = MediaType.parse("application/json");
+RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
+  .addFormDataPart("payment_type", payment_type)
+  .addFormDataPart("service_id", service_id)
+  .addFormDataPart("order_id", order_id)
+  .addFormDataPart("amount", amount)
+  .addFormDataPart("token", token)
+  .build();
+Request request = new Request.Builder()
+  .url(url)
+  .method("POST", body)
+  .addHeader("Content-Type", "application/json")
+  .addHeader("Accept", "application/json")
+  .build();
+Response response = client.newCall(request).execute();
+```
+
+Tranzaksiyanın yoxlanılması
+
+```
+int service_id = 4;
+int order_id = 1;
+float amount = 1000;
+String secret_key = "123456";
+String plain_text = String.format("%d%d%f%s", service_id, order_id, amount, secret_key);
+MessageDigest md5 = MessageDigest.getInstance("MD5");
+md5.update(StandardCharsets.UTF_8.encode(plain_text));
+String token = String.format("%032x", new BigInteger(1, md5.digest()));
+
+String url = "http://127.0.0.1:8000/en/checkout/status/e6554945-8caf-472c-9f6c-2640f33efb1d?token=4bfb74cf2d435ebf4109acbbed8ff52c";
+
+OkHttpClient client = new OkHttpClient().newBuilder()
+  .build();
+MediaType mediaType = MediaType.parse("text/plain");
+RequestBody body = RequestBody.create(mediaType, "");
+Request request = new Request.Builder()
+  .url(url)
+  .method("GET", body)
+   .addHeader("Content-Type", "application/json")
+  .addHeader("Accept", "application/json")
+  .build();
+Response response = client.newCall(request).execute();
+
 ```
 
 <a name="pythoncode"/>
